@@ -1,0 +1,43 @@
+<meta charset="utf8" />
+<html>
+  <script src='lib/sql-wasm.js'></script>
+  <script src="lib/codemirror.js"></script>
+  <script src="lib/mode/sql.js"></script>
+  <link rel="stylesheet" href="lib/codemirror.css">
+  <link rel="stylesheet" href="lib/theme/neat.css">
+  <script>
+    config = {
+      locateFile: filename => `lib/${filename}`
+    }
+    var db = null;
+    initSqlJs(config).then(function(SQL) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'lego.sqlite', true); // https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function(e) {
+        var uInt8Array = new Uint8Array(this.response);
+        db = new SQL.Database(uInt8Array);
+      }
+      xhr.send();
+    });
+    function doQuery() {
+      try {
+        var result = db.exec(myCodeMirror.getValue());
+        console.log(JSON.stringify(result));
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+  </script>
+  <body>
+      <div id="codemirror", style="display: inline-block; border: solid; cursor: text;"></div>
+      <button onclick="doQuery();">Execute</button>
+  </body>
+  <script>
+      var myCodeMirror = CodeMirror(document.getElementById("codemirror"), {
+          value: "select * from legos where id in (1, 2)\n",
+          mode:  "text/x-sql",
+          theme:  "neat"
+      });
+  </script>
+</html>
