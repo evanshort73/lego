@@ -3,6 +3,7 @@
   <script src='lib/sql-wasm.js'></script>
   <script src="lib/codemirror.js"></script>
   <script src="lib/mode/sql.js"></script>
+  <script src="main.js"></script>
   <link rel="stylesheet" href="lib/codemirror.css">
   <link rel="stylesheet" href="lib/theme/neat.css">
   <script>
@@ -32,8 +33,13 @@
   <body>
       <div id="codemirror", style="display: inline-block; border: solid; cursor: text;"></div>
       <button onclick="doQuery();">Execute</button>
+      <div id="elm"></div>
   </body>
   <script>
+      var app = Elm.Main.init({
+        node: document.getElementById('elm')
+      });
+
       var myCodeMirror = CodeMirror(document.getElementById("codemirror"), {
           value: "select * from legos where id in (1, 2)\n",
           mode:  "text/x-sql",
