@@ -11,6 +11,7 @@
       locateFile: filename => `lib/${filename}`
     }
     var db = null;
+    var stmt = null;
     initSqlJs(config).then(function(SQL) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'lego.sqlite', true); // https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite
@@ -18,6 +19,7 @@
       xhr.onload = function(e) {
         var uInt8Array = new Uint8Array(this.response);
         db = new SQL.Database(uInt8Array);
+        stmt = db.prepare('select * from legos where id in (1, 2)');
       }
       xhr.send();
     });
